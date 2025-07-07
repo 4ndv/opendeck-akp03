@@ -13,8 +13,8 @@ Requires OpenDeck 2.5.0 or newer
 - Ajazz AKP03 (0300:1001)
 - Ajazz AKP03E (0300:3002)
 - Ajazz AKP03R (0300:1003)
-- Mirabox N3 (N3EN?) (6603:1003)
-- Mirabox N3 "Yunir" variant (6602:1002)
+- Mirabox N3 (6602:1002)
+- Mirabox N3EN (6603:1003)
 
 ## Platform support
 

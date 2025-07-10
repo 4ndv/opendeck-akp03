@@ -32,21 +32,7 @@ Requires OpenDeck 2.5.0 or newer
 
 ## Adding new devices
 
-Many devices with similar layout and functionality, but different hardware IDs have started popping up over the years. If you have a device that is very similar to the ones already supported, chances are it is very easy to add support for your device too.  
-You do not need to delve into much of Rust development to get this up and running. Try the following:
-
-1. Figure out the USB Vendor and Product ID using `lsusb` e.g.: `Bus 003 Device 014: ID 1500:3001 Ellisys HOTSPOTEKUSB HID DEMO`
-2. Add your device to `40-opendeck-akp03.rules` (you need to add a total of four new entries)
-3. Add an entry to the README and later do a pull request! 
-4. Adjust `mapping.rs` for the new hardware
-    1. Add your device to the `enum Kind` part in the 
-    2. Add the `VID` (Vendor ID) and `PID` (Product ID) 
-    3. Add a `QUERY` for your device and add it to the list of `QUERIES`
-    4. Match your device to the proper kind in `impl Kind`
-    5. Add a human readable name for your device
-    6. Add your device to the correct `image_format` match. Try one and see if it needs rotating.
-5. Build the rust package as described below
-6. Test everything working and add a pull request
+Read [this wiki page](https://github.com/4ndv/opendeck-akp03/wiki/Adding-support-for-new-devices) for more information.
 
 ## Building
 
@@ -56,13 +42,19 @@ You'll need:
 
 - A Linux OS of some sort
 - Rust 1.87 and up with `x86_64-unknown-linux-gnu` and `x86_64-pc-windows-gnu` targets installed
+- gcc with Windows support
 - Docker
 - [just](https://just.systems)
 
-For arch linux the following commands get everything up and running: 
+On Arch Linux:
 
 ```sh
 sudo pacman -S just mingw-w64-gcc mingw-w64-binutils
+```
+
+Adding rust targets:
+
+```sh
 rustup target add x86_64-pc-windows-gnu
 rustup target add x86_64-unknown-linux-gnu
 ```

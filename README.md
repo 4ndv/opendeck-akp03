@@ -18,7 +18,7 @@ Requires OpenDeck 2.5.0 or newer
 - Mirabox N3EN (6603:1003)
 - Soomfon Stream Controller SE (1500:3001)
 - Mars Gaming MSD-TWO (0B00:1001)
-- Treslin N3 (5548:1001)
+- TreasLin N3 (5548:1001)
 
 ## Platform support
 

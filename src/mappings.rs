@@ -21,6 +21,7 @@ pub enum Kind {
     N3EN,
     SoomfonSE,
     MSDTWO,
+    TreslinN3,
 }
 
 pub const AJAZZ_VID: u16 = 0x0300;
@@ -28,6 +29,7 @@ pub const MIRABOX_VID: u16 = 0x6603;
 pub const N3_VID: u16 = 0x6602;
 pub const SOOMFON_VID: u16 = 0x1500;
 pub const MARS_GAMING_VID: u16 = 0x0B00;
+pub const TRESLIN_VID: u16 = 0x5548;
 
 pub const AKP03_PID: u16 = 0x1001;
 pub const AKP03E_PID: u16 = 0x1002;
@@ -37,6 +39,7 @@ pub const N3_PID: u16 = 0x1002;
 pub const N3EN_PID: u16 = 0x1003;
 pub const SOOMFON_SE_PID: u16 = 0x3001;
 pub const MSD_TWO_PID: u16 = 0x1001;
+pub const TRESLIN_N3_PID: u16 = 0x1001;
 
 // Map all queries to usage page 65440 and usage id 1 for now
 pub const AKP03_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03_PID);
@@ -47,8 +50,9 @@ pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
 pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
+pub const TRESLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TRESLIN_VID, TRESLIN_N3_PID);
 
-pub const QUERIES: [DeviceQuery; 8] = [
+pub const QUERIES: [DeviceQuery; 9] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
@@ -57,6 +61,7 @@ pub const QUERIES: [DeviceQuery; 8] = [
     N3EN_QUERY,
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
+    TRESLIN_QUERY,
 ];
 
 impl Kind {
@@ -91,6 +96,11 @@ impl Kind {
                 _ => None,
             },
 
+            TRESLIN_VID => match pid {
+                TRESLIN_N3_PID => Some(Kind::TreslinN3),
+                _ => None,
+            }
+
             _ => None,
         }
     }
@@ -107,6 +117,7 @@ impl Kind {
             Self::N3EN => "Mirabox N3EN",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
+            Self::TreslinN3 => "Treslin N3"
         }
         .to_string()
     }
@@ -117,6 +128,7 @@ impl Kind {
             Self::N3EN => 3,
             Self::Akp03Erev2 => 3,
             Self::SoomfonSE => 3,
+            Self::TreslinN3 => 3,
             _ => 2,
         }
     }

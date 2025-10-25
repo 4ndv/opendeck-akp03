@@ -19,6 +19,7 @@ Requires OpenDeck 2.5.0 or newer
 - Soomfon Stream Controller SE (1500:3001)
 - Mars Gaming MSD-TWO (0B00:1001)
 - TreasLin N3 (5548:1001)
+- Redragon Skyrider SS-551 (0200:2000)
 
 ## Platform support
 

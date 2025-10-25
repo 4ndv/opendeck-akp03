@@ -22,6 +22,7 @@ pub enum Kind {
     SoomfonSE,
     MSDTWO,
     TreasLinN3,
+    RedragonSS551,
 }
 
 pub const AJAZZ_VID: u16 = 0x0300;
@@ -30,6 +31,7 @@ pub const N3_VID: u16 = 0x6602;
 pub const SOOMFON_VID: u16 = 0x1500;
 pub const MARS_GAMING_VID: u16 = 0x0B00;
 pub const TREASLIN_VID: u16 = 0x5548;
+pub const REDRAGON_VID: u16 = 0x0200;
 
 pub const AKP03_PID: u16 = 0x1001;
 pub const AKP03E_PID: u16 = 0x1002;
@@ -40,6 +42,7 @@ pub const N3EN_PID: u16 = 0x1003;
 pub const SOOMFON_SE_PID: u16 = 0x3001;
 pub const MSD_TWO_PID: u16 = 0x1001;
 pub const TREASLIN_N3_PID: u16 = 0x1001;
+pub const REDRAGON_SS551_PID: u16 = 0x2000;
 
 // Map all queries to usage page 65440 and usage id 1 for now
 pub const AKP03_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03_PID);
@@ -51,8 +54,9 @@ pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
 pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
+pub const REDRAGON_SS551_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
 
-pub const QUERIES: [DeviceQuery; 9] = [
+pub const QUERIES: [DeviceQuery; 10] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
@@ -62,6 +66,7 @@ pub const QUERIES: [DeviceQuery; 9] = [
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
     TREASLIN_QUERY,
+    REDRAGON_SS551_QUERY,
 ];
 
 impl Kind {
@@ -99,7 +104,12 @@ impl Kind {
             TREASLIN_VID => match pid {
                 TREASLIN_N3_PID => Some(Kind::TreasLinN3),
                 _ => None,
-            }
+            },
+
+            REDRAGON_VID => match pid {
+                REDRAGON_SS551_PID => Some(Kind::RedragonSS551),
+                _ => None,
+            },
 
             _ => None,
         }
@@ -117,7 +127,8 @@ impl Kind {
             Self::N3EN => "Mirabox N3EN",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
-            Self::TreasLinN3 => "TreasLin N3"
+            Self::TreasLinN3 => "TreasLin N3",
+            Self::RedragonSS551 => "Redragon Skyrider SS-551"
         }
         .to_string()
     }
@@ -129,6 +140,7 @@ impl Kind {
             Self::Akp03Erev2 => 3,
             Self::SoomfonSE => 3,
             Self::TreasLinN3 => 3,
+            Self::RedragonSS551 => 3,
             _ => 2,
         }
     }

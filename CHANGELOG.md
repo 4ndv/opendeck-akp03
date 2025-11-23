@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.4] - 2025-11-23
+
+### 🚀 Features
+
+- Move some debug logs to info
+
 ## [0.7.3] - 2025-10-25
 
 ### 🚀 Features

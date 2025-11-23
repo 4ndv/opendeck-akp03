@@ -2,7 +2,7 @@
   "Name": "Ajazz AKP03 / Mirabox N3",
   "Description": "Device support plugin for Ajazz AKP03 (+variants)",
   "Author": "Andrey Viktorov",
-  "Version": "0.7.3",
+  "Version": "0.7.4",
   "PluginUUID": "st.lynx.plugins.opendeck-akp03",
   "CodePathLin": "opendeck-akp03-linux",
   "CodePathMac": "opendeck-akp03-mac",

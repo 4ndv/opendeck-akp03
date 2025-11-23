@@ -3,7 +3,7 @@ use mirajazz::{error::MirajazzError, types::DeviceInput};
 use crate::mappings::{ENCODER_COUNT, KEY_COUNT};
 
 pub fn process_input(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    log::debug!("Processing input: {}, {}", input, state);
+    log::info!("Processing input: {}, {}", input, state);
 
     match input {
         (0..=6) | 0x25 | 0x30 | 0x31 => read_button_press(input, state),

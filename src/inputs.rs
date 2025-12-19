@@ -6,10 +6,11 @@ pub fn process_input(input: u8, state: u8) -> Result<DeviceInput, MirajazzError>
     log::info!("Processing input: {}, {}", input, state);
 
     match input {
-        (0..=6) | 0x25 | 0x30 | 0x31 => read_button_press(input, state),
+        // Some firmware variants report buttons 7-9 as 0x25/0x30/0x31, others as 7/8/9.
+        (0..=9) | 0x25 | 0x30 | 0x31 => read_button_press(input, state),
         0x90 | 0x91 | 0x50 | 0x51 | 0x60 | 0x61 => read_encoder_value(input),
         0x33..=0x35 => read_encoder_press(input, state),
-        _ => Err(MirajazzError::BadData),
+        _ => Ok(DeviceInput::NoData),
     }
 }
 
@@ -35,7 +36,7 @@ fn read_button_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError>
 
     let pressed_index: usize = match input {
         // Six buttons with displays
-        (1..=6) => input as usize,
+        (1..=9) => input as usize,
         // Three buttons without displays
         0x25 => 7,
         0x30 => 8,

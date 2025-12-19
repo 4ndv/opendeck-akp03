@@ -18,6 +18,7 @@ pub enum Kind {
     Akp03R,
     Akp03Erev2,
     N3,
+    MiraboxN3,
     N3EN,
     SoomfonSE,
     MSDTWO,
@@ -50,18 +51,20 @@ pub const AKP03E_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP0
 pub const AKP03R_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_PID);
 pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03E_REV2_PID);
 pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
+pub const MIRABOX_N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3_PID);
 pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
 pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
 pub const REDRAGON_SS551_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
 
-pub const QUERIES: [DeviceQuery; 10] = [
+pub const QUERIES: [DeviceQuery; 11] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
     AKP03E_REV2_QUERY,
     N3_QUERY,
+    MIRABOX_N3_QUERY,
     N3EN_QUERY,
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
@@ -92,6 +95,7 @@ impl Kind {
             },
 
             MIRABOX_VID => match pid {
+                N3_PID => Some(Kind::MiraboxN3),
                 N3EN_PID => Some(Kind::N3EN),
                 _ => None,
             },
@@ -123,7 +127,8 @@ impl Kind {
             Self::Akp03E => "Ajazz AKP03E",
             Self::Akp03R => "Ajazz AKP03R",
             Self::Akp03Erev2 => "Ajazz AKP03E (rev. 2)",
-            Self::N3 => "Mirabox N3",
+            Self::N3 => "Mirabox N3 (0x6602)",
+            Self::MiraboxN3 => "Mirabox N3 (0x6603)",
             Self::N3EN => "Mirabox N3EN",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
@@ -137,6 +142,7 @@ impl Kind {
     pub fn protocol_version(&self) -> usize {
         match self {
             Self::N3EN => 3,
+            Self::MiraboxN3 => 3,
             Self::Akp03Erev2 => 3,
             Self::SoomfonSE => 3,
             Self::TreasLinN3 => 3,
@@ -146,21 +152,26 @@ impl Kind {
     }
 
     pub fn image_format(&self) -> ImageFormat {
-        if self.protocol_version() == 3 {
-            return ImageFormat {
+        match self.protocol_version() {
+            3 => ImageFormat {
                 mode: ImageMode::JPEG,
                 size: (60, 60),
                 rotation: ImageRotation::Rot90,
                 mirror: ImageMirroring::None,
-            };
+            },
+            _ if matches!(self, Self::MiraboxN3) => ImageFormat {
+                mode: ImageMode::JPEG,
+                size: (60, 60),
+                rotation: ImageRotation::Rot90,
+                mirror: ImageMirroring::None,
+            },
+            _ => ImageFormat {
+                mode: ImageMode::JPEG,
+                size: (60, 60),
+                rotation: ImageRotation::Rot0,
+                mirror: ImageMirroring::None,
+            },
         }
-
-        return ImageFormat {
-            mode: ImageMode::JPEG,
-            size: (60, 60),
-            rotation: ImageRotation::Rot0,
-            mirror: ImageMirroring::None,
-        };
     }
 }
 

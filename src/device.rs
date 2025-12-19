@@ -59,7 +59,7 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
     tokio::select! {
         _ = device_events_task(&candidate) => {},
         _ = token.cancelled() => {}
-    };
+    }
 
     log::info!("Shutting down device {:?}", candidate);
 

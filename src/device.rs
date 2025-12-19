@@ -6,7 +6,9 @@ use tokio_util::sync::CancellationToken;
 
 use crate::{
     DEVICES, TOKENS,
-    mappings::{COL_COUNT, CandidateDevice, ENCODER_COUNT, KEY_COUNT, Kind, ROW_COUNT},
+    mappings::{
+        COL_COUNT, CandidateDevice, ENCODER_COUNT, KEY_COUNT, Kind, MIRABOX_VID, N3_PID, ROW_COUNT,
+    },
 };
 
 /// Initializes a device and listens for events
@@ -98,9 +100,11 @@ pub async fn handle_error(id: &String, err: MirajazzError) -> bool {
 }
 
 pub async fn connect(candidate: &CandidateDevice) -> Result<Device, MirajazzError> {
+    let protocol_version = candidate.kind.protocol_version();
+
     let result = Device::connect(
         &candidate.dev,
-        candidate.kind.protocol_version(),
+        protocol_version,
         KEY_COUNT,
         ENCODER_COUNT,
     )
@@ -176,8 +180,24 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
 
 /// Handles different combinations of "set image" event, including clearing the specific buttons and whole device
 pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(), MirajazzError> {
+    // OpenDeck can send SetImage for different controller types (e.g. "Keypad", "Encoder").
+    // This device only supports images on the keypad buttons.
+    if evt.controller.as_deref() == Some("Encoder") {
+        return Ok(());
+    }
+
     match (evt.position, evt.image) {
         (Some(position), Some(image)) => {
+            // Some N3-family devices have 6 display keys + 3 non-display buttons.
+            // Ignore images for the non-display buttons to avoid spurious writes/resets.
+            if matches!(
+                Kind::from_vid_pid(device.vid, device.pid),
+                Some(Kind::N3 | Kind::N3EN)
+            ) && position >= 6
+            {
+                return Ok(());
+            }
+
             log::info!("Setting image for button {}", position);
 
             // OpenDeck sends image as a data url, so parse it using a library
@@ -193,12 +213,19 @@ pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(),
 
             let image = load_from_memory_with_format(body.as_slice(), image::ImageFormat::Jpeg)?;
 
+            // Some Mirabox N3 (0x6603:0x1002) batches have the display rotated compared to the
+            // common N3 model. Adjust rotation only for that VID/PID.
+            let mut image_format = Kind::from_vid_pid(device.vid, device.pid)
+                .unwrap_or(Kind::Akp03)
+                .image_format();
+            if device.vid == MIRABOX_VID && device.pid == N3_PID {
+                image_format.rotation = mirajazz::types::ImageRotation::Rot90;
+            }
+
             device
                 .set_button_image(
                     position,
-                    Kind::from_vid_pid(device.vid, device.pid)
-                        .unwrap()
-                        .image_format(),
+                    image_format,
                     image,
                 )
                 .await?;

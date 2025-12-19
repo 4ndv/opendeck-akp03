@@ -10,15 +10,26 @@ use tokio_util::sync::CancellationToken;
 use crate::{
     DEVICES, TOKENS, TRACKER,
     device::device_task,
-    mappings::{CandidateDevice, DEVICE_NAMESPACE, Kind, QUERIES},
+    mappings::{CandidateDevice, DEVICE_NAMESPACE, Kind, MIRABOX_VID, N3_PID, QUERIES},
 };
 
-fn serial_to_id(serial: &String) -> String {
-    format!("{}-{}", DEVICE_NAMESPACE, serial)
+fn device_id(dev: &HidDeviceInfo) -> Option<String> {
+    let serial = dev.serial_number.as_ref()?;
+
+    // OpenDeck profile stores are keyed by device id. If we change device capabilities (e.g. encoder count),
+    // an existing profile store can become incompatible and silently break encoder actions.
+    //
+    // For the Mirabox VID (0x6603) + N3 PID (0x1002) batches, keep the namespace prefix ("n3") but use a
+    // distinct id so OpenDeck creates a fresh, correctly sized profile store.
+    if dev.vendor_id == MIRABOX_VID && dev.product_id == N3_PID {
+        Some(format!("{}-6603-{}", DEVICE_NAMESPACE, serial))
+    } else {
+        Some(format!("{}-{}", DEVICE_NAMESPACE, serial))
+    }
 }
 
 fn device_info_to_candidate(dev: HidDeviceInfo) -> Option<CandidateDevice> {
-    let id = serial_to_id(&dev.serial_number.clone()?);
+    let id = device_id(&dev)?;
     let kind = Kind::from_vid_pid(dev.vendor_id, dev.product_id)?;
 
     Some(CandidateDevice { id, dev, kind })
@@ -97,7 +108,9 @@ pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError>
                     }
                 }
                 DeviceLifecycleEvent::Disconnected(info) => {
-                    let id = serial_to_id(&info.serial_number.unwrap());
+                    let Some(id) = device_id(&info) else {
+                        continue;
+                    };
 
                     if let Some(token) = TOKENS.write().await.remove(&id) {
                         log::info!("Sending cancel request for {}", id);

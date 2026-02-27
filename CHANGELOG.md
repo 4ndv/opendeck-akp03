@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.5] - 2026-02-27
+
+### 🚀 Features
+
+- *(device)* Add support for Ajazz AKP03R (rev. 2) (#24)
+
+### 🐛 Bug Fixes
+
+- *(udev)* Typo in mode
+
 ## [0.7.4] - 2025-11-23
 
 ### 🚀 Features

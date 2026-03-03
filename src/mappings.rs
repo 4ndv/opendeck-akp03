@@ -22,6 +22,7 @@ pub enum Kind {
     N3EN,
     SoomfonSE,
     MSDTWO,
+    TreasLinN1,
     TreasLinN3,
     RedragonSS551,
 }
@@ -43,6 +44,7 @@ pub const N3_PID: u16 = 0x1002;
 pub const N3EN_PID: u16 = 0x1003;
 pub const SOOMFON_SE_PID: u16 = 0x3001;
 pub const MSD_TWO_PID: u16 = 0x1001;
+pub const TREASLIN_N1_PID: u16 = 0x1002;
 pub const TREASLIN_N3_PID: u16 = 0x1001;
 pub const REDRAGON_SS551_PID: u16 = 0x2000;
 
@@ -56,11 +58,12 @@ pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
 pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
+pub const TREASLIN_N1_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N1_PID);
 pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
 pub const REDRAGON_SS551_QUERY: DeviceQuery =
     DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
 
-pub const QUERIES: [DeviceQuery; 11] = [
+pub const QUERIES: [DeviceQuery; 12] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
@@ -70,6 +73,7 @@ pub const QUERIES: [DeviceQuery; 11] = [
     N3EN_QUERY,
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
+    TREASLIN_N1_QUERY,
     TREASLIN_QUERY,
     REDRAGON_SS551_QUERY,
 ];
@@ -108,6 +112,7 @@ impl Kind {
             },
 
             TREASLIN_VID => match pid {
+                TREASLIN_N1_PID => Some(Kind::TreasLinN1),
                 TREASLIN_N3_PID => Some(Kind::TreasLinN3),
                 _ => None,
             },
@@ -134,6 +139,7 @@ impl Kind {
             Self::N3EN => "Mirabox N3EN",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
+            Self::TreasLinN1 => "TreasLin N1",
             Self::TreasLinN3 => "TreasLin N3",
             Self::RedragonSS551 => "Redragon Skyrider SS-551",
         }

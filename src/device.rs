@@ -9,6 +9,13 @@ use crate::{
     mappings::{COL_COUNT, CandidateDevice, ENCODER_COUNT, KEY_COUNT, Kind, ROW_COUNT},
 };
 
+#[repr(u8)]
+enum N1Mode {
+    Keyboard = 1,
+    Calculator = 2,
+    Software = 3,
+}
+
 /// Initializes a device and listens for events
 pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
     log::info!("Running device task for {:?}", candidate);
@@ -18,6 +25,10 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
         let device = connect(&candidate).await?;
 
         device.set_brightness(50).await?;
+
+	// TODO: If N1 or similar device. Quick test setting for all
+	device.set_mode(N1Mode::Software as u8).await?;
+
         device.clear_all_button_images().await?;
         device.flush().await?;
 

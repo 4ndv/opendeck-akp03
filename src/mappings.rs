@@ -59,7 +59,7 @@ pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
 pub const TREASLIN_N1_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N1_PID);
-pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
+pub const TREASLIN_N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
 pub const REDRAGON_SS551_QUERY: DeviceQuery =
     DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
 
@@ -74,7 +74,7 @@ pub const QUERIES: [DeviceQuery; 12] = [
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
     TREASLIN_N1_QUERY,
-    TREASLIN_QUERY,
+    TREASLIN_N3_QUERY,
     REDRAGON_SS551_QUERY,
 ];
 
@@ -152,6 +152,7 @@ impl Kind {
             Self::N3EN => 3,
             Self::Akp03Erev2 | Self::Akp03Rrev2 => 3,
             Self::SoomfonSE => 3,
+            Self::TreasLinN1 => 3,
             Self::TreasLinN3 => 3,
             Self::RedragonSS551 => 3,
             _ => 2,

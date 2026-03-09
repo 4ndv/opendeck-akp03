@@ -19,6 +19,7 @@ pub enum Kind {
     Akp03Erev2,
     Akp03Rrev2,
     N3,
+    N3CN3,
     N3EN,
     SoomfonSE,
     MSDTWO,
@@ -41,6 +42,7 @@ pub const AKP03E_REV2_PID: u16 = 0x3002;
 pub const AKP03R_REV2_PID: u16 = 0x3003;
 pub const N3_PID: u16 = 0x1002;
 pub const N3EN_PID: u16 = 0x1003;
+pub const N3CN3_PID: u16 = 0x1002;
 pub const SOOMFON_SE_PID: u16 = 0x3001;
 pub const MSD_TWO_PID: u16 = 0x1001;
 pub const TREASLIN_N3_PID: u16 = 0x1001;
@@ -54,6 +56,7 @@ pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID,
 pub const AKP03R_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_REV2_PID);
 pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
 pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
+pub const N3CN3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3CN3_PID);
 pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
 pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
 pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
@@ -68,6 +71,7 @@ pub const QUERIES: [DeviceQuery; 11] = [
     AKP03R_REV2_QUERY,
     N3_QUERY,
     N3EN_QUERY,
+    N3CN3_QUERY,
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
     TREASLIN_QUERY,
@@ -99,6 +103,7 @@ impl Kind {
 
             MIRABOX_VID => match pid {
                 N3EN_PID => Some(Kind::N3EN),
+                N3CN3_PID => Some(Kind::N3CN3),
                 _ => None,
             },
 
@@ -132,6 +137,7 @@ impl Kind {
             Self::Akp03Rrev2 => "Ajazz AKP03R (rev. 2)",
             Self::N3 => "Mirabox N3",
             Self::N3EN => "Mirabox N3EN",
+            Self::N3CN3 => "Mirabox N3CN (rev. 3.0)",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
             Self::TreasLinN3 => "TreasLin N3",
@@ -143,7 +149,7 @@ impl Kind {
     /// Returns protocol version for device
     pub fn protocol_version(&self) -> usize {
         match self {
-            Self::N3EN => 3,
+            Self::N3EN | Self::N3CN3 => 3,
             Self::Akp03Erev2 | Self::Akp03Rrev2 => 3,
             Self::SoomfonSE => 3,
             Self::TreasLinN3 => 3,

@@ -1,6 +1,8 @@
 use mirajazz::{error::MirajazzError, types::DeviceInput};
 
-use crate::mappings::{ENCODER_COUNT, KEY_COUNT};
+// Maximum parser capacity — actual device key/encoder counts are enforced at the device level
+const MAX_KEY_COUNT: usize = 9;
+const MAX_ENCODER_COUNT: usize = 3;
 
 pub fn process_input(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
     log::info!("Processing input: {}, {}", input, state);
@@ -16,7 +18,7 @@ pub fn process_input(input: u8, state: u8) -> Result<DeviceInput, MirajazzError>
 fn read_button_states(states: &[u8]) -> Vec<bool> {
     let mut bools = vec![];
 
-    for i in 0..KEY_COUNT {
+    for i in 0..MAX_KEY_COUNT {
         bools.push(states[i + 1] != 0);
     }
 
@@ -25,7 +27,7 @@ fn read_button_states(states: &[u8]) -> Vec<bool> {
 
 fn read_button_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
     let mut button_states = vec![0x01];
-    button_states.extend(vec![0u8; KEY_COUNT + 1]);
+    button_states.extend(vec![0u8; MAX_KEY_COUNT + 1]);
 
     if input == 0 {
         return Ok(DeviceInput::ButtonStateChange(read_button_states(
@@ -51,7 +53,7 @@ fn read_button_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError>
 }
 
 fn read_encoder_value(input: u8) -> Result<DeviceInput, MirajazzError> {
-    let mut encoder_values = vec![0i8; ENCODER_COUNT];
+    let mut encoder_values = vec![0i8; MAX_ENCODER_COUNT];
 
     let (encoder, value): (usize, i8) = match input {
         // Left encoder
@@ -71,7 +73,7 @@ fn read_encoder_value(input: u8) -> Result<DeviceInput, MirajazzError> {
 }
 
 fn read_encoder_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    let mut encoder_states = vec![false; ENCODER_COUNT];
+    let mut encoder_states = vec![false; MAX_ENCODER_COUNT];
 
     let encoder: usize = match input {
         0x33 => 0, // Left encoder

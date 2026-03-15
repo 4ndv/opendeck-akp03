@@ -6,7 +6,7 @@ use tokio_util::sync::CancellationToken;
 
 use crate::{
     DEVICES, TOKENS,
-    mappings::{COL_COUNT, CandidateDevice, ENCODER_COUNT, KEY_COUNT, Kind, ROW_COUNT},
+    mappings::{CandidateDevice, Kind},
 };
 
 /// Initializes a device and listens for events
@@ -45,9 +45,9 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
             .register_device(
                 candidate.id.clone(),
                 candidate.kind.human_name(),
-                ROW_COUNT as u8,
-                COL_COUNT as u8,
-                ENCODER_COUNT as u8,
+                candidate.kind.row_count() as u8,
+                candidate.kind.col_count() as u8,
+                candidate.kind.encoder_count() as u8,
                 0,
             )
             .await
@@ -101,8 +101,8 @@ pub async fn connect(candidate: &CandidateDevice) -> Result<Device, MirajazzErro
     let result = Device::connect(
         &candidate.dev,
         candidate.kind.protocol_version(),
-        KEY_COUNT,
-        ENCODER_COUNT,
+        candidate.kind.key_count(),
+        candidate.kind.encoder_count(),
     )
     .await;
 
@@ -151,9 +151,15 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
             let id = candidate.id.clone();
 
             if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
+                let key_count = candidate.kind.key_count() as u8;
                 match update {
-                    DeviceStateUpdate::ButtonDown(key) => outbound.key_down(id, key).await.unwrap(),
-                    DeviceStateUpdate::ButtonUp(key) => outbound.key_up(id, key).await.unwrap(),
+                    DeviceStateUpdate::ButtonDown(key) if key < key_count => {
+                        outbound.key_down(id, key).await.unwrap();
+                    }
+                    DeviceStateUpdate::ButtonUp(key) if key < key_count => {
+                        outbound.key_up(id, key).await.unwrap();
+                    }
+                    DeviceStateUpdate::ButtonDown(_) | DeviceStateUpdate::ButtonUp(_) => {}
                     DeviceStateUpdate::EncoderDown(encoder) => {
                         outbound.encoder_down(id, encoder).await.unwrap();
                     }

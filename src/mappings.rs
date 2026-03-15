@@ -6,10 +6,6 @@ use mirajazz::{
 // Must be unique between all the plugins, 2 characters long and match `DeviceNamespace` field in `manifest.json`
 pub const DEVICE_NAMESPACE: &str = "n3";
 
-pub const ROW_COUNT: usize = 3;
-pub const COL_COUNT: usize = 3;
-pub const KEY_COUNT: usize = 9;
-pub const ENCODER_COUNT: usize = 3;
 
 #[derive(Debug, Clone)]
 pub enum Kind {
@@ -158,22 +154,52 @@ impl Kind {
         }
     }
 
-    pub fn image_format(&self) -> ImageFormat {
-        if self.protocol_version() == 3 {
-            return ImageFormat {
-                mode: ImageMode::JPEG,
-                size: (60, 60),
-                rotation: ImageRotation::Rot90,
-                mirror: ImageMirroring::None,
-            };
+    /// Number of rows of screen buttons on the device.
+    /// Override for devices with fewer rows (e.g. MSD-TWO has 2 rows instead of 3).
+    pub fn row_count(&self) -> usize {
+        match self {
+            Self::MSDTWO => 2,
+            _ => 3,
         }
+    }
 
-        return ImageFormat {
+    /// Number of columns of screen buttons on the device.
+    pub fn col_count(&self) -> usize {
+        match self {
+            _ => 3,
+        }
+    }
+
+    /// Total number of screen buttons exposed to OpenDeck.
+    /// Derived from row_count * col_count — non-screen buttons (e.g. navigation keys)
+    /// are excluded here and filtered at the device event level.
+    pub fn key_count(&self) -> usize {
+        self.row_count() * self.col_count()
+    }
+
+    /// Number of rotary encoders on the device.
+    pub fn encoder_count(&self) -> usize {
+        match self {
+            _ => 3,
+        }
+    }
+
+    /// Returns the image format configuration for the device's LCD screens.
+    /// Override for devices that need different rotation or size than their
+    /// protocol version default (e.g. MSD-TWO uses protocol v2 but needs Rot90).
+    pub fn image_format(&self) -> ImageFormat {
+        let rotation = match self {
+            Self::MSDTWO => ImageRotation::Rot90,
+            _ if self.protocol_version() == 3 => ImageRotation::Rot90,
+            _ => ImageRotation::Rot0,
+        };
+
+        ImageFormat {
             mode: ImageMode::JPEG,
             size: (60, 60),
-            rotation: ImageRotation::Rot0,
+            rotation,
             mirror: ImageMirroring::None,
-        };
+        }
     }
 }
 

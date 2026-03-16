@@ -151,15 +151,13 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
             let id = candidate.id.clone();
 
             if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
-                let key_count = candidate.kind.key_count() as u8;
                 match update {
-                    DeviceStateUpdate::ButtonDown(key) if key < key_count => {
+                    DeviceStateUpdate::ButtonDown(key) => {
                         outbound.key_down(id, key).await.unwrap();
                     }
-                    DeviceStateUpdate::ButtonUp(key) if key < key_count => {
+                    DeviceStateUpdate::ButtonUp(key) => {
                         outbound.key_up(id, key).await.unwrap();
                     }
-                    DeviceStateUpdate::ButtonDown(_) | DeviceStateUpdate::ButtonUp(_) => {}
                     DeviceStateUpdate::EncoderDown(encoder) => {
                         outbound.encoder_down(id, encoder).await.unwrap();
                     }

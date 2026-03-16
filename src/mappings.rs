@@ -148,30 +148,22 @@ impl Kind {
         }
     }
 
-    /// Number of rows of screen buttons on the device.
-    /// Override for devices with fewer rows (e.g. MSD-TWO has 2 rows instead of 3).
     pub fn row_count(&self) -> usize {
         match self {
-            Self::MSDTWO => 2,
             _ => 3,
         }
     }
 
-    /// Number of columns of screen buttons on the device.
     pub fn col_count(&self) -> usize {
         match self {
             _ => 3,
         }
     }
 
-    /// Total number of screen buttons exposed to OpenDeck.
-    /// Derived from row_count * col_count — non-screen buttons (e.g. navigation keys)
-    /// are excluded here and filtered at the device event level.
     pub fn key_count(&self) -> usize {
         self.row_count() * self.col_count()
     }
 
-    /// Number of rotary encoders on the device.
     pub fn encoder_count(&self) -> usize {
         match self {
             _ => 3,

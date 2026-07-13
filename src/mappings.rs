@@ -162,7 +162,7 @@ impl Kind {
         if self.protocol_version() == 3 {
             return ImageFormat {
                 mode: ImageMode::JPEG,
-                size: (60, 60),
+                size: (64, 64),
                 rotation: ImageRotation::Rot90,
                 mirror: ImageMirroring::None,
             };

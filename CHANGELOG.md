@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0] - 2026-07-31
+
+### 🐛 Bug Fixes
+
+- *(device)* Correct image_format for protocol_version 3 (#37)
+
+### 💼 Other
+
+- *(deps)* Bump mirajazz to 0.16.0
+
 ## [0.8.1] - 2026-03-18
 
 ### 🐛 Bug Fixes

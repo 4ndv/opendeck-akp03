@@ -404,9 +404,9 @@ dependencies = [
 
 [[package]]
 name = "mirajazz"
-version = "0.16.0"
+version = "0.16.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ba5a6cc09f85f75b28b6abf8440ffcd24f66d371e2eae1318b1ffe9d4376b9b"
+checksum = "e367c789606caab2cfb292879ff5a3688d8917cdf0e0a01d4e8fcbbb0cdf5eb4"
 dependencies = [
  "async-hid",
  "futures-lite",

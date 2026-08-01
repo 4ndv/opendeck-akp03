@@ -8,7 +8,7 @@ data-url = "0.3.1"
 futures-lite = "2.6.0"
 image = { version = "0.25.6", default-features = false, features = ["bmp", "jpeg"] }
 log = "0.4.27"
-mirajazz = "0.16.0"
+mirajazz = "0.16.2"
 openaction = "1.1.5"
 simplelog = "0.12.2"
 tokio = { version = "1.44.2", features = ["full"] }

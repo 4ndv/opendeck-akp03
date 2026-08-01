@@ -89,6 +89,23 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
 
         Ok(())
     }
+
+    async fn system_did_wake_up(
+        &self,
+        _event: SystemDidWakeUpEvent,
+        outbound: &mut OutboundEventManager,
+    ) -> EventHandlerResult {
+        log::info!("The system is woke now, resetting devices");
+
+        let devices = DEVICES.write().await;
+
+        for (id, device) in devices.iter() {
+            let _ = device.reset().await;
+            let _ = outbound.rerender_images(id.to_string()).await;
+        }
+
+        Ok(())
+    }
 }
 
 struct ActionEventHandler {}

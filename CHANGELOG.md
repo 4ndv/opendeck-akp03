@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2026-08-01
+
+### 🚀 Features
+
+- *(device)* Reset and rerender images on system wake
+
+### 💼 Other
+
+- *(deps)* Bump mirajazz to 0.16.2
+
 ## [0.9.0] - 2026-07-31
 
 ### 🐛 Bug Fixes

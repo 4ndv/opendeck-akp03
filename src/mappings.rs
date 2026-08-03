@@ -40,6 +40,7 @@ pub const AKP03E_PID: u16 = 0x1002;
 pub const AKP03R_PID: u16 = 0x1003;
 pub const AKP03E_REV2_PID: u16 = 0x3002;
 pub const AKP03R_REV2_PID: u16 = 0x3003;
+pub const N3_REV1_PID: u16 = 0x1000;
 pub const N3_PID: u16 = 0x1002;
 pub const N3EN_PID: u16 = 0x1003;
 pub const N3CN3_PID: u16 = 0x1002;
@@ -54,6 +55,7 @@ pub const AKP03E_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP0
 pub const AKP03R_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_PID);
 pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03E_REV2_PID);
 pub const AKP03R_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_REV2_PID);
+pub const N3_REV1_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_REV1_PID);
 pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
 pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
 pub const N3CN3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3CN3_PID);
@@ -63,12 +65,13 @@ pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID,
 pub const REDRAGON_SS551_QUERY: DeviceQuery =
     DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
 
-pub const QUERIES: [DeviceQuery; 12] = [
+pub const QUERIES: [DeviceQuery; 13] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
     AKP03E_REV2_QUERY,
     AKP03R_REV2_QUERY,
+    N3_REV1_QUERY,
     N3_QUERY,
     N3EN_QUERY,
     N3CN3_QUERY,
@@ -92,7 +95,7 @@ impl Kind {
             },
 
             N3_VID => match pid {
-                N3_PID => Some(Kind::N3),
+                N3_PID | N3_REV1_PID => Some(Kind::N3),
                 _ => None,
             },
 

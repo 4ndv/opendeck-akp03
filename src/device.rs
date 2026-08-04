@@ -191,33 +191,43 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
     Ok(())
 }
 
+fn decode_jpeg_data_url(image: &str) -> Result<image::DynamicImage, String> {
+    let url = DataUrl::process(image).map_err(|error| format!("invalid data URL: {error}"))?;
+
+    if url.mime_type().subtype != "jpeg" {
+        return Err(format!("unsupported image mime type: {}", url.mime_type()));
+    }
+
+    let (body, _fragment) = url
+        .decode_to_vec()
+        .map_err(|error| format!("invalid data URL body: {error:?}"))?;
+
+    load_from_memory_with_format(body.as_slice(), image::ImageFormat::Jpeg)
+        .map_err(|error| format!("invalid JPEG image: {error}"))
+}
+
 /// Handles different combinations of "set image" event, including clearing the specific buttons and whole device
 pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(), MirajazzError> {
     match (evt.position, evt.image) {
         (Some(position), Some(image)) => {
             log::info!("Setting image for button {}", position);
 
-            // OpenDeck sends image as a data url, so parse it using a library
-            let url = DataUrl::process(image.as_str()).unwrap(); // Isn't expected to fail, so unwrap it is
-            let (body, _fragment) = url.decode_to_vec().unwrap(); // Same here
+            // OpenDeck sends image as a data URL. Malformed host input is non-fatal:
+            // log and ignore it instead of terminating the plugin.
+            let image = match decode_jpeg_data_url(image.as_str()) {
+                Ok(image) => image,
+                Err(error) => {
+                    log::error!("Ignoring invalid image payload: {error}");
+                    return Ok(());
+                }
+            };
 
-            // Allow only image/jpeg mime for now
-            if url.mime_type().subtype != "jpeg" {
-                log::error!("Incorrect mime type: {}", url.mime_type());
-
-                return Ok(()); // Not a fatal error, enough to just log it
-            }
-
-            let image = load_from_memory_with_format(body.as_slice(), image::ImageFormat::Jpeg)?;
+            let image_format = Kind::from_vid_pid(device.vid, device.pid)
+                .ok_or(MirajazzError::UnrecognizedPID)?
+                .image_format();
 
             device
-                .set_button_image(
-                    position,
-                    Kind::from_vid_pid(device.vid, device.pid)
-                        .unwrap()
-                        .image_format(),
-                    image,
-                )
+                .set_button_image(position, image_format, image)
                 .await?;
             device.flush().await?;
         }
@@ -233,4 +243,24 @@ pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(),
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::decode_jpeg_data_url;
+
+    #[test]
+    fn rejects_non_data_url_image_payload() {
+        assert!(decode_jpeg_data_url("not-a-data-url").is_err());
+    }
+
+    #[test]
+    fn rejects_malformed_jpeg_payload() {
+        assert!(decode_jpeg_data_url("data:image/jpeg;base64,not-valid-base64!!!").is_err());
+    }
+
+    #[test]
+    fn rejects_non_jpeg_payload() {
+        assert!(decode_jpeg_data_url("data:image/png;base64,").is_err());
+    }
 }

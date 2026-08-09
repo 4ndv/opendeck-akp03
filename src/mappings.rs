@@ -18,6 +18,7 @@ pub enum Kind {
     Akp03R,
     Akp03Erev2,
     Akp03Rrev2,
+    N3_6602_1000,
     N3_6602_1002,
     N3_6603_1002,
     N3_6603_1003,
@@ -35,6 +36,7 @@ pub const MARS_GAMING_VID: u16 = 0x0B00;
 pub const TREASLIN_VID: u16 = 0x5548;
 pub const REDRAGON_VID: u16 = 0x0200;
 
+pub const C_1000_PID: u16 = 0x1000;
 pub const C_1001_PID: u16 = 0x1001;
 pub const C_1002_PID: u16 = 0x1002;
 pub const C_1003_PID: u16 = 0x1003;
@@ -51,6 +53,8 @@ pub const AKP03E_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_10
 pub const AKP03R_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_1003_PID);
 pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_3002_PID);
 pub const AKP03R_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_3003_PID);
+pub const N3_6602_1000_QUERY: DeviceQuery =
+    DeviceQuery::new(65440, 1, MIRABOX_6602_VID, C_1000_PID);
 pub const N3_6602_1002_QUERY: DeviceQuery =
     DeviceQuery::new(65440, 1, MIRABOX_6602_VID, C_1002_PID);
 pub const N3_6603_1002_QUERY: DeviceQuery =
@@ -62,12 +66,13 @@ pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VI
 pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, C_1001_PID);
 pub const REDRAGON_SS551_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, REDRAGON_VID, C_2000_PID);
 
-pub const QUERIES: [DeviceQuery; 12] = [
+pub const QUERIES: [DeviceQuery; 13] = [
     AKP03_QUERY,
     AKP03E_QUERY,
     AKP03R_QUERY,
     AKP03E_REV2_QUERY,
     AKP03R_REV2_QUERY,
+    N3_6602_1000_QUERY,
     N3_6602_1002_QUERY,
     N3_6603_1002_QUERY,
     N3_6603_1003_QUERY,
@@ -91,6 +96,7 @@ impl Kind {
             },
 
             MIRABOX_6602_VID => match pid {
+                C_1000_PID => Some(Kind::N3_6602_1000),
                 C_1002_PID => Some(Kind::N3_6602_1002),
                 _ => None,
             },
@@ -134,6 +140,7 @@ impl Kind {
             Self::Akp03R => "Ajazz AKP03R",
             Self::Akp03Erev2 => "Ajazz AKP03E (rev. 2)",
             Self::Akp03Rrev2 => "Ajazz AKP03R (rev. 2)",
+            Self::N3_6602_1000 => "Mirabox N3 (6602:1000)",
             Self::N3_6602_1002 => "Mirabox N3 (6602:1002)",
             Self::N3_6603_1002 => "Mirabox N3 (6603:1002)",
             Self::N3_6603_1003 => "Mirabox N3 (6603:1003)",

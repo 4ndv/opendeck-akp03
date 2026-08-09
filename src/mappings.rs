@@ -28,40 +28,39 @@ pub enum Kind {
 }
 
 pub const AJAZZ_VID: u16 = 0x0300;
-pub const MIRABOX_VID: u16 = 0x6603;
-pub const N3_VID: u16 = 0x6602;
+pub const MIRABOX_6602_VID: u16 = 0x6602;
+pub const MIRABOX_6603_VID: u16 = 0x6603;
 pub const SOOMFON_VID: u16 = 0x1500;
 pub const MARS_GAMING_VID: u16 = 0x0B00;
 pub const TREASLIN_VID: u16 = 0x5548;
 pub const REDRAGON_VID: u16 = 0x0200;
 
-pub const AKP03_PID: u16 = 0x1001;
-pub const AKP03E_PID: u16 = 0x1002;
-pub const AKP03R_PID: u16 = 0x1003;
-pub const AKP03E_REV2_PID: u16 = 0x3002;
-pub const AKP03R_REV2_PID: u16 = 0x3003;
-pub const N3_PID: u16 = 0x1002;
-pub const N3EN_PID: u16 = 0x1003;
-pub const N3CN3_PID: u16 = 0x1002;
-pub const SOOMFON_SE_PID: u16 = 0x3001;
-pub const MSD_TWO_PID: u16 = 0x1001;
-pub const TREASLIN_N3_PID: u16 = 0x1001;
-pub const REDRAGON_SS551_PID: u16 = 0x2000;
+pub const C_1001_PID: u16 = 0x1001;
+pub const C_1002_PID: u16 = 0x1002;
+pub const C_1003_PID: u16 = 0x1003;
+
+pub const C_2000_PID: u16 = 0x2000;
+
+pub const C_3001_PID: u16 = 0x3001;
+pub const C_3002_PID: u16 = 0x3002;
+pub const C_3003_PID: u16 = 0x3003;
 
 // Map all queries to usage page 65440 and usage id 1 for now
-pub const AKP03_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03_PID);
-pub const AKP03E_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03E_PID);
-pub const AKP03R_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_PID);
-pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03E_REV2_PID);
-pub const AKP03R_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, AKP03R_REV2_PID);
-pub const N3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, N3_VID, N3_PID);
-pub const N3EN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3EN_PID);
-pub const N3CN3_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N3CN3_PID);
-pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, SOOMFON_SE_PID);
-pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, MSD_TWO_PID);
-pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, TREASLIN_N3_PID);
-pub const REDRAGON_SS551_QUERY: DeviceQuery =
-    DeviceQuery::new(65440, 1, REDRAGON_VID, REDRAGON_SS551_PID);
+pub const AKP03_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_1001_PID);
+pub const AKP03E_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_1002_PID);
+pub const AKP03R_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_1003_PID);
+pub const AKP03E_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_3002_PID);
+pub const AKP03R_REV2_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, C_3003_PID);
+pub const N3_6602_1002_QUERY: DeviceQuery =
+    DeviceQuery::new(65440, 1, MIRABOX_6602_VID, C_1002_PID);
+pub const N3_6603_1002_QUERY: DeviceQuery =
+    DeviceQuery::new(65440, 1, MIRABOX_6603_VID, C_1002_PID);
+pub const N3_6603_1003_QUERY: DeviceQuery =
+    DeviceQuery::new(65440, 1, MIRABOX_6603_VID, C_1003_PID);
+pub const SOOMFON_SE_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, SOOMFON_VID, C_3001_PID);
+pub const MSD_TWO_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MARS_GAMING_VID, C_1001_PID);
+pub const TREASLIN_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, TREASLIN_VID, C_1001_PID);
+pub const REDRAGON_SS551_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, REDRAGON_VID, C_2000_PID);
 
 pub const QUERIES: [DeviceQuery; 12] = [
     AKP03_QUERY,
@@ -69,9 +68,9 @@ pub const QUERIES: [DeviceQuery; 12] = [
     AKP03R_QUERY,
     AKP03E_REV2_QUERY,
     AKP03R_REV2_QUERY,
-    N3_QUERY,
-    N3EN_QUERY,
-    N3CN3_QUERY,
+    N3_6602_1002_QUERY,
+    N3_6603_1002_QUERY,
+    N3_6603_1003_QUERY,
     SOOMFON_SE_QUERY,
     MSD_TWO_QUERY,
     TREASLIN_QUERY,
@@ -83,42 +82,42 @@ impl Kind {
     pub fn from_vid_pid(vid: u16, pid: u16) -> Option<Self> {
         match vid {
             AJAZZ_VID => match pid {
-                AKP03_PID => Some(Kind::Akp03),
-                AKP03E_PID => Some(Kind::Akp03E),
-                AKP03R_PID => Some(Kind::Akp03R),
-                AKP03E_REV2_PID => Some(Kind::Akp03Erev2),
-                AKP03R_REV2_PID => Some(Kind::Akp03Rrev2),
+                C_1001_PID => Some(Kind::Akp03),
+                C_1002_PID => Some(Kind::Akp03E),
+                C_1003_PID => Some(Kind::Akp03R),
+                C_3002_PID => Some(Kind::Akp03Erev2),
+                C_3003_PID => Some(Kind::Akp03Rrev2),
                 _ => None,
             },
 
-            N3_VID => match pid {
-                N3_PID => Some(Kind::N3),
+            MIRABOX_6602_VID => match pid {
+                C_1002_PID => Some(Kind::N3),
+                _ => None,
+            },
+
+            MIRABOX_6603_VID => match pid {
+                C_1002_PID => Some(Kind::N3CN3),
+                C_1003_PID => Some(Kind::N3EN),
                 _ => None,
             },
 
             SOOMFON_VID => match pid {
-                SOOMFON_SE_PID => Some(Kind::SoomfonSE),
-                _ => None,
-            },
-
-            MIRABOX_VID => match pid {
-                N3EN_PID => Some(Kind::N3EN),
-                N3CN3_PID => Some(Kind::N3CN3),
+                C_3001_PID => Some(Kind::SoomfonSE),
                 _ => None,
             },
 
             MARS_GAMING_VID => match pid {
-                MSD_TWO_PID => Some(Kind::MSDTWO),
+                C_1001_PID => Some(Kind::MSDTWO),
                 _ => None,
             },
 
             TREASLIN_VID => match pid {
-                TREASLIN_N3_PID => Some(Kind::TreasLinN3),
+                C_1001_PID => Some(Kind::TreasLinN3),
                 _ => None,
             },
 
             REDRAGON_VID => match pid {
-                REDRAGON_SS551_PID => Some(Kind::RedragonSS551),
+                C_2000_PID => Some(Kind::RedragonSS551),
                 _ => None,
             },
 

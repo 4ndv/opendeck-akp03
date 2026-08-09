@@ -1,6 +1,6 @@
 id := "st.lynx.plugins.opendeck-akp03.sdPlugin"
 
-release: bump package tag
+release next=`git cliff --bumped-version | tr -d "v"`: (bump next) package (tag next)
 
 package: build-linux build-mac build-win collect zip
 
@@ -13,16 +13,16 @@ bump next=`git cliff --bumped-version | tr -d "v"`:
     sed -i 's/"Version": ".*"/"Version": "{{next}}"/g' manifest.json
     sed -i 's/^version = ".*"$/version = "{{next}}"/g' Cargo.toml
 
-tag next=`git cliff --bumped-version`:
+tag next=`git cliff --bumped-version | tr -d "v"`:
     echo "Generating changelog"
-    git cliff -o CHANGELOG.md --tag {{next}}
+    git cliff -o CHANGELOG.md --tag v{{next}}
 
     echo "We will now commit the changes, please review before pressing any key"
     read ans
 
     git add .
-    git commit -m "chore(release): {{next}}"
-    git tag "{{next}}"
+    git commit -m "chore(release): v{{next}}"
+    git tag "v{{next}}"
 
 build-linux:
     cargo build --release --target x86_64-unknown-linux-gnu --target-dir target/plugin-linux

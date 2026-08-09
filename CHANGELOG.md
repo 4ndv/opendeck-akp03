@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.1] - 2026-08-09
+
+### 🚀 Features
+
+- *(device)* Add support for N3 (6602:1000), supersedes #39 and #42
+
+### 💼 Other
+
+- *(just)* Allow to set specific version for release command
+
+### 🚜 Refactor
+
+- Make pids non-specific constants
+- Don't try and guess revisions or versions for N3
+
 ## [0.10.0] - 2026-08-01
 
 ### 🚀 Features

@@ -18,9 +18,9 @@ pub enum Kind {
     Akp03R,
     Akp03Erev2,
     Akp03Rrev2,
-    N3,
-    N3CN3,
-    N3EN,
+    N3_6602_1002,
+    N3_6603_1002,
+    N3_6603_1003,
     SoomfonSE,
     MSDTWO,
     TreasLinN3,
@@ -91,13 +91,13 @@ impl Kind {
             },
 
             MIRABOX_6602_VID => match pid {
-                C_1002_PID => Some(Kind::N3),
+                C_1002_PID => Some(Kind::N3_6602_1002),
                 _ => None,
             },
 
             MIRABOX_6603_VID => match pid {
-                C_1002_PID => Some(Kind::N3CN3),
-                C_1003_PID => Some(Kind::N3EN),
+                C_1002_PID => Some(Kind::N3_6603_1002),
+                C_1003_PID => Some(Kind::N3_6603_1003),
                 _ => None,
             },
 
@@ -134,9 +134,9 @@ impl Kind {
             Self::Akp03R => "Ajazz AKP03R",
             Self::Akp03Erev2 => "Ajazz AKP03E (rev. 2)",
             Self::Akp03Rrev2 => "Ajazz AKP03R (rev. 2)",
-            Self::N3 => "Mirabox N3",
-            Self::N3EN => "Mirabox N3EN",
-            Self::N3CN3 => "Mirabox N3CN (rev. 3)",
+            Self::N3_6602_1002 => "Mirabox N3 (6602:1002)",
+            Self::N3_6603_1002 => "Mirabox N3 (6603:1002)",
+            Self::N3_6603_1003 => "Mirabox N3 (6603:1003)",
             Self::SoomfonSE => "Soomfon Stream Controller SE",
             Self::MSDTWO => "Mars Gaming MSD-TWO",
             Self::TreasLinN3 => "TreasLin N3",
@@ -148,7 +148,7 @@ impl Kind {
     /// Returns protocol version for device
     pub fn protocol_version(&self) -> usize {
         match self {
-            Self::N3EN | Self::N3CN3 => 3,
+            Self::N3_6603_1002 | Self::N3_6603_1003 => 3,
             Self::Akp03Erev2 | Self::Akp03Rrev2 => 3,
             Self::SoomfonSE => 3,
             Self::TreasLinN3 => 3,

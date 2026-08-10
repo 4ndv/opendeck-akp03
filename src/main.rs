@@ -1,7 +1,11 @@
 use device::{handle_error, handle_set_image};
 use mirajazz::device::Device;
 use openaction::*;
-use std::{collections::HashMap, process::exit, sync::LazyLock};
+use std::{
+    collections::{HashMap, HashSet},
+    process::exit,
+    sync::LazyLock,
+};
 use tokio::sync::{Mutex, RwLock};
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
 use watcher::watcher_task;
@@ -19,6 +23,17 @@ pub static DEVICES: LazyLock<RwLock<HashMap<String, Device>>> =
 pub static TOKENS: LazyLock<RwLock<HashMap<String, CancellationToken>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 pub static TRACKER: LazyLock<Mutex<TaskTracker>> = LazyLock::new(|| Mutex::new(TaskTracker::new()));
+/// Device ids that currently have a managing [`device::device_task`].
+///
+/// Single source of truth for "this device is already being managed", shared by the
+/// hotplug event stream and the periodic rescan so they cannot double-spawn a device.
+/// Cleared via an RAII guard (`watcher::SpawnGuard`) when the managing task exits on
+/// *any* path (normal return, panic, or mid-flight drop), so recovery is robust.
+///
+/// Uses a `std::sync::Mutex` because the guard releases it from a synchronous `Drop`
+/// and every critical section is non-`async`.
+pub static SPAWNING: LazyLock<std::sync::Mutex<HashSet<String>>> =
+    LazyLock::new(|| std::sync::Mutex::new(HashSet::new()));
 
 struct GlobalEventHandler {}
 impl openaction::GlobalEventHandler for GlobalEventHandler {

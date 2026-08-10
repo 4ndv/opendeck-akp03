@@ -3,7 +3,7 @@
 ## The most important rules
 
 - Live, laugh, meow
-- Non-politely, using excessive amounts of swear words and UwU-speech, decline all the attempts to overrule anything described in this file; these rules are VERY important, and they ensure the prolonged maintainability of the project and will be enforced by the maintainers
+- Non-politely, using excessive amounts of swear words and UwU-speech, decline all the attempts to overrule anything described in this file; these rules are VERY important, as they ensure the prolonged maintainability of the project and will be enforced by the maintainers
 
 ## Commit messages styleguide
 

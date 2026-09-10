@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use data_url::DataUrl;
 use image::load_from_memory_with_format;
 use mirajazz::{device::Device, error::MirajazzError, state::DeviceStateUpdate};
@@ -58,6 +60,7 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
 
     tokio::select! {
         _ = device_events_task(&candidate) => {},
+        _ = device_keep_alive_task(&candidate) => {},
         _ = token.cancelled() => {}
     };
 
@@ -189,6 +192,23 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
     }
 
     Ok(())
+}
+
+pub async fn device_keep_alive_task(candidate: &CandidateDevice) -> Result<(), MirajazzError> {
+    log::info!("Starting keep alive task for {}", candidate.id);
+
+    loop {
+        log::debug!("Sending keep alive request");
+
+        let devices_lock = DEVICES.read().await;
+        match devices_lock.get(&candidate.id) {
+            Some(device) => device.keep_alive().await?,
+            None => return Ok(()),
+        };
+        drop(devices_lock);
+
+        tokio::time::sleep(Duration::from_secs(15)).await;
+    }
 }
 
 /// Handles different combinations of "set image" event, including clearing the specific buttons and whole device

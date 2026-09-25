@@ -78,11 +78,15 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
         let id = event.device.clone();
 
         if let Some(device) = DEVICES.read().await.get(&event.device) {
-            device
-                .set_brightness(event.brightness)
-                .await
-                .map_err(async |err| handle_error(&id, err).await)
-                .ok();
+            // OpenDeck's sleep paths (idle timeout, sleep-on-lock, `--sleep-device`) all set the
+            // brightness to 0. On these panels brightness 0 only dims the backlight, so map it to
+            // the device's real sleep command; any brightness > 0 lights it back up.
+            let result = if event.brightness == 0 {
+                device.sleep().await
+            } else {
+                device.set_brightness(event.brightness).await
+            };
+            result.map_err(async |err| handle_error(&id, err).await).ok();
         } else {
             log::error!("Received event for unknown device: {}", event.device);
         }

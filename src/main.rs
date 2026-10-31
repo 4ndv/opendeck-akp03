@@ -93,16 +93,30 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
     async fn system_did_wake_up(
         &self,
         _event: SystemDidWakeUpEvent,
-        outbound: &mut OutboundEventManager,
+        _outbound: &mut OutboundEventManager,
     ) -> EventHandlerResult {
-        log::info!("The system is woke now, resetting devices");
+        log::info!("The system is woke now, reconnecting devices");
 
-        let devices = DEVICES.write().await;
+        // HID handles opened before sleep can silently stop delivering input reports
+        // (writes still work), so drop them and reconnect from scratch
+        let ids: Vec<String> = DEVICES.read().await.keys().cloned().collect();
 
-        for (id, device) in devices.iter() {
-            let _ = device.reset().await;
-            let _ = outbound.rerender_images(id.to_string()).await;
+        for id in &ids {
+            if let Some(token) = TOKENS.write().await.remove(id) {
+                token.cancel();
+            }
+
+            DEVICES.write().await.remove(id);
         }
+
+        // Run in background: device task needs the outbound manager we are holding right now
+        TRACKER.lock().await.spawn(async {
+            tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+
+            if let Err(err) = watcher::spawn_device_tasks().await {
+                log::error!("Failed to reconnect devices after wake: {}", err);
+            }
+        });
 
         Ok(())
     }

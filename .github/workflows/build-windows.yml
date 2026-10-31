@@ -1,0 +1,18 @@
+name: Build Windows plugin
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release
+      - run: Copy-Item target/release/opendeck-akp03.exe opendeck-akp03-win.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opendeck-akp03-win
+          path: opendeck-akp03-win.exe

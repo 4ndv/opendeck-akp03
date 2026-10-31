@@ -41,7 +41,8 @@ async fn get_candidates() -> Result<Vec<CandidateDevice>, MirajazzError> {
     Ok(candidates)
 }
 
-pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError> {
+/// Scans for connected devices and spawns a device task for each one that isn't running yet
+pub async fn spawn_device_tasks() -> Result<(), MirajazzError> {
     let tracker = TRACKER.lock().await.clone();
 
     // Scans for connected devices that (possibly) we can use
@@ -50,6 +51,11 @@ pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError>
     log::info!("Looking for connected devices");
 
     for candidate in candidates {
+        // Don't add existing device again
+        if DEVICES.read().await.contains_key(&candidate.id) {
+            continue;
+        }
+
         log::info!("New candidate {:#?}", candidate);
 
         let token = CancellationToken::new();
@@ -61,6 +67,14 @@ pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError>
 
         tracker.spawn(device_task(candidate, token));
     }
+
+    Ok(())
+}
+
+pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError> {
+    let tracker = TRACKER.lock().await.clone();
+
+    spawn_device_tasks().await?;
 
     let mut watcher = DeviceWatcher::new();
     let mut watcher_stream = watcher.watch(&QUERIES).await?;
